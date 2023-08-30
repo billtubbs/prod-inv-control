@@ -1,0 +1,12 @@
+thetap: 10  # Production lead time (thetap) [time units]
+thetad: 20  # Disturbance forecast horizon (thetaf) [time units]
+thetas: 2  # Supply stream delivery time (thetad) [time units]
+vard: 1000  # Unforecasted demand variance (vard)
+rchange: 20000  # Inventory setpoint [units]
+dchange: 2000  # Demand change [units]
+lamr: 5  # Setpoint filter lambda [time units]
+stptfiltorder: 1  # Setpoint filter order (n) [1 or 2]
+lamd: 1  # Unmeasured disturbance filter lambda [time units]
+distfiltorder: 1  # Unmeasured disturbance filter order [1: n=3, 2: n=4]
+lamdf: 1  # Measured disturbance (feedforward) filter lambda [time units]
+fffiltorder: 1  # Measured disturbance filter order [1: n=2, 2: n=3]

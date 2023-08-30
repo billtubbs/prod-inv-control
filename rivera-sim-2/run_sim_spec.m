@@ -1,23 +1,27 @@
 %
-% ChE 494/561  Advanced Process Control
-%
-% Spring 2022
-%
 % Single node inventory management problem
 % Combined feedback-feedforward IMC solution with three degrees of freedom
 % Contrasted with feedback-only 2 degree-of-freedom IMC design
 %
-% Control implementation per the paper, 
-% 
-% J.D. Schwartz and D.E. Rivera. “A process control approach to tactical inventory management in production-inventory systems,” 
-% International Journal of Production Economics, Volume 125, Issue 1, Pages 111-124, 2010.
+% This code is adapted from code provided by D E Rivera, Arizona 
+% State University in January 2023:
+%  - inglenodescm2022.m
+%  - contfeedforwardr12.slx
 %
-% Developed by D E Rivera, Arizona State University
+% This code was used for teaching in the following course:
+%   ChE 494/561  Advanced Process Control, Spring 2022
 %
+% It can be used to reproduce the results in the paper:
+%  - J.D. Schwartz and D.E. Rivera. “A process control approach to 
+%    tactical inventory management in production-inventory systems," 
+%    International Journal of Production Economics, Volume 125, 
+%    Issue 1, Pages 111-124, 2010.
 %
+
 
 addpath("../yaml")
 
+% Select simulation to run
 sim_name = "singlenodescm2022";
 fprintf("Running sim_spec for '%s'\n", sim_name)
 
@@ -46,30 +50,40 @@ lamdf = sim_spec.lamdf;
 fffiltorder = sim_spec.fffiltorder;
 
 thetaptilde = thetap;
-thetadtilde = (thetad-thetas);
+thetadtilde = (thetad - thetas);
 
-if stptfiltorder == 1  % First-order filter
-  numqr =  [1 0];
-  denqr =  [lamr 1];
-elseif stptfiltorder == 2  % Second-order filter
-  numqr = conv([0 1],[1 0]);
-  denqr = conv([lamr 1],[lamr 1]);
+% Define filter coefficients
+switch stptfiltorder
+    case 1  % First-order filter
+        numqr =  [1 0];
+        denqr =  [lamr 1];
+    case 2  % Second-order filter
+        numqr = conv([0 1],[1 0]);
+        denqr = conv([lamr 1],[lamr 1]);
+    otherwise
+        error("ValueError: stptfiltorder")
 end
 
-if distfiltorder == 1  % Third-order filter
-  numqd = conv(conv([thetaptilde 1],[1 0]),[3*lamd 1]);
-  denqd = conv(conv([lamd 1],[lamd 1]),[lamd 1]);
-elseif distfiltorder == 2  % Fourth-order filter
-  numqd = conv(conv([thetaptilde 1],[1 0]),[4*lamd 1]);
-  denqd = conv(conv(conv([lamd 1],[lamd 1]),[lamd 1]),[lamd 1]);
+switch distfiltorder
+    case 1  % Third-order filter
+        numqd = conv(conv([thetaptilde 1],[1 0]),[3*lamd 1]);
+        denqd = conv(conv([lamd 1],[lamd 1]),[lamd 1]);
+    case 2  % Fourth-order filter
+        numqd = conv(conv([thetaptilde 1],[1 0]),[4*lamd 1]);
+        denqd = conv(conv(conv([lamd 1],[lamd 1]),[lamd 1]),[lamd 1]);
+    otherwise
+        error("ValueError: distfiltorder")
 end
 
-if fffiltorder == 1  % Second-order filter
-  numqf = [2*lamdf 1];
-  denqf = conv([lamdf 1],[lamdf 1]);
-elseif fffiltorder == 2  % Third-order filter
-  numqf = [3*lamdf 1];
-  denqf = conv(conv([lamdf 1],[lamdf 1]),[lamdf 1]);
+switch fffiltorder
+    case 1  % Second-order filter
+        numqf = [2*lamdf 1];
+        denqf = conv([lamdf 1],[lamdf 1]);
+    case 2  % Third-order filter
+        numqf = [3*lamdf 1];
+        denqf = conv(conv([lamdf 1],[lamdf 1]),[lamdf 1]);
+    otherwise
+        error("ValueError: fffiltorder")
 end
 
 if thetaptilde > thetadtilde
@@ -78,6 +92,7 @@ if thetaptilde > thetadtilde
 else
 	ffcase = 0;
 end
+
 
 plot_titles = [
     "Feedback-only control"
@@ -99,10 +114,16 @@ for i_sim = 1:numel(ffswitch_values)
     warning on
 
     % Save simulation outputs
-    sim_out = table(r,u,d,d1,y);
+    sim_out = table(t,r,u,d,d1,y);
     filename = sprintf("sim_out_%d.csv", ffswitch);
     writetable(sim_out, fullfile(results_dir, filename))
-    
+
+    % Save noise for replication purposes
+    % (should be the same each simulation)
+    e_out = table(e);
+    filename = sprintf("sim_out_%d_e.csv", ffswitch);
+    writetable(e_out, fullfile(results_dir, filename))
+
     % Make plot
     figure(i_sim)
     subplot(3,1,1)
@@ -110,12 +131,12 @@ for i_sim = 1:numel(ffswitch_values)
     xlabel('Time')
     ylabel('Inventory');
     title(plot_titles(i_sim));
-    
+
     subplot(3,1,2)
     plot(tout,u,'linewidth',2)
     xlabel('Time');
     ylabel('Inflow');
-    
+
     subplot(3,1,3);
     plot(tout,d1,'--',tout,d,'linewidth',2);
     xlabel('Time')

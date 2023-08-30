@@ -52,7 +52,7 @@ end;
 
 lamd  =  input('Enter the unmeasured disturbance filter lambda [1 time units]: ');
 if isempty(lamd), lamd =1; end;
-	
+
 distfiltorder = menu('Enter the unmeasured disturbance filter order ','n=3','n=4');
 if distfiltorder == 1  % Third-order filter
   numqd = conv(conv([thetaptilde 1],[1 0]),[3*lamd 1]);
