@@ -27,7 +27,7 @@ fprintf("Running sim_spec for '%s'\n", sim_name)
 
 % Directories used
 sim_dir = fullfile("simulations", sim_name);
-results_dir = fullfile("simulations", "results");
+results_dir = fullfile(sim_dir, "results");
 if ~exist(results_dir, 'dir')
     mkdir(results_dir)
 end
