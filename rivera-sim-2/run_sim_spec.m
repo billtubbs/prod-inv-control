@@ -21,7 +21,7 @@
 
 addpath("../yaml")
 
-% Select simulation to run
+% Select simulation model to run
 sim_name = "singlenodescm2022";
 fprintf("Running sim_spec for '%s'\n", sim_name)
 
@@ -36,6 +36,7 @@ end
 sim_spec = yaml.loadFile(fullfile(sim_dir, "sim_spec.yaml"));
 
 % Check all parameters loaded
+sim_model = sim_spec.sim_model;
 thetap = sim_spec.thetap;
 thetad = sim_spec.thetad;
 thetas = sim_spec.thetas;
@@ -110,7 +111,7 @@ for i_sim = 1:numel(ffswitch_values)
     % Run Simulink simulation
     fprintf("Running simulation %d...\n", i_sim)
     warning off
-    sim('contfeedforwardr12',[0 120]);
+    sim(sim_model, [0 120]);
     warning on
 
     % Save simulation outputs

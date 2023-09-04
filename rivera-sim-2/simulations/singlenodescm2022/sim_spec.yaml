@@ -1,3 +1,4 @@
+sim_model: "contfeedforwardr12"  # Name of Simulink model
 thetap: 10  # Production lead time (thetap) [time units]
 thetad: 20  # Disturbance forecast horizon (thetaf) [time units]
 thetas: 2  # Supply stream delivery time (thetad) [time units]
