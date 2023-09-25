@@ -26,11 +26,10 @@ end
 
 % Simulation model parameters
 sim_model = "prodinvsys_ol";
-thetap = 10;  % Production lead time (thetap) [time units]
-thetaf = 20;  % Disturbance forecast horizon (thetaf) [time units]
-thetas = 2;  % Enter the supply stream delivery time (thetas) [time units]
+thetap = 10;  % Disturbance forecast horizon (thetap) [time units]
 thetaf = 20;  % Demand forecast horizon (thetaf) [time units]
-vard = [85, 1000];  % Unforecasted demand variance (vard) [time, quantity units^2]
+thetas = 2;  % Supply stream delivery time (thetas) [time units]
+vard = [100, 200];  % Unforecasted demand variance (vard) [time, quantity units^2]
 rchange = [10, 1000];  % Inventory setpoint [time, quantity]
 dchange = [60, 150];  % Demand change [quantity, time]
 Ts = 1;  % sampling interval
