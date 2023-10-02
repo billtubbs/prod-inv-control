@@ -63,7 +63,7 @@ end
 %sim_spec = yaml.loadFile(fullfile(sim_dir, "sim_spec.yaml"));
 
 % Simulation model parameters
-sim_model = "prodinvsys_ol";
+sim_model = "prodinvsys_sim_ol";
 thetap = 10;  % Disturbance forecast horizon (thetap) [time units]
 thetad = 20;  % Demand forecast horizon (thetaf) [time units]
 thetas = 2;  % Supply stream delivery time (thetas) [time units]
