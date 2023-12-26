@@ -21,19 +21,12 @@ clear all
 % Sampling period
 Ts = 1;
 
-% Parameters
-% Factory production lead time [time units]
-thetap1 = 3;
-
-% Shipping delay between the Factory and Retailer [time units]
-thetap2 = 1;  
-
 % Simulation parameters
 t_stop = 250;
 nT = floor(t_stop / Ts);
 t = Ts*(0:nT)';
 
-% Demand forecast
+% Demand
 demand_changes = [
            0       10000
           50       11000
@@ -41,8 +34,16 @@ demand_changes = [
          150       11000
          200       10000
 ];
-% Demand forecast
 df = [t make_step_sequence(t, demand_changes)];
+
+% Set-point (not used in this simulation)
+r = [t zeros(nT+1, 1)];
+
+% Factory starts
+factory_starts = [
+          5        10000
+];
+u = [t make_step_sequence(t, factory_starts)];
 
 % Select simulation model to run
 sim_name = "prodinvsys_ol";
@@ -64,6 +65,9 @@ end
 
 % Simulation model parameters
 sim_model = "prodinvsys_sim_ol";
+% Parameters
+thetap1 = 3;  % Factory production lead time [time units]
+thetap2 = 1;  % Shipping delay between the Factory and Retailer [time units]
 thetap = 10;  % Disturbance forecast horizon (thetap) [time units]
 thetad = 20;  % Demand forecast horizon (thetaf) [time units]
 thetas = 2;  % Supply stream delivery time (thetas) [time units]
@@ -110,7 +114,7 @@ title(plot_title);
 subplot(3,1,2)
 stairs(t,u,'color',colors(5,:),'Linewidth',2)
 y_lims = ylim;
-%ylim([-50 max(250,y_lims(2))])
+ylim([-50 max(250,y_lims(2))])
 xlabel('Time');
 ylabel('Orders');
 grid on
@@ -118,7 +122,7 @@ grid on
 subplot(3,1,3);
 stairs(t,df,'k--'); hold on
 stairs(t,d,'k','linewidth',2)
-%y_lims = ylim;
+y_lims = ylim;
 ylim([-50 max(250,y_lims(2))])
 xlabel('Time')
 ylabel('Demand');
